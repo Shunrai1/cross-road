@@ -1,3 +1,4 @@
+// 这是 X 轴（横向/左右方向）
 export const MIN_TILE_INDEX = -12
 export const MAX_TILE_INDEX = 12
 export const tilesPerRow = MAX_TILE_INDEX - MIN_TILE_INDEX + 1
