@@ -1,0 +1,32 @@
+{
+  "security.workspace.trust.untrustedFiles": "open",
+  "open-in-browser.default": "Google Chrome",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "emmet.variables": {
+    "lang": "zh-CN"
+  },
+  "json.schemas": [],
+  "workbench.iconTheme": "material-icon-theme",
+  "glassit.alpha": 220,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "git.enableSmartCommit": true,
+  "eslint.validate": [
+    "vue",
+    "html",
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "bracket-pair-colorizer-2.depreciation-notice": false,
+  "eslint.useFlatConfig": true,
+  "explorer.confirmDelete": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "files.autoSave": "off"
+}

@@ -6,46 +6,46 @@ export default class Tree {
    * @param {number} rowIndex - 当前行的z坐标
    */
   constructor(scene, resources, trees, rowIndex = 0) {
-    this.scene = scene;
-    this.resources = resources;
-    this.trees = trees;
-    this.rowIndex = rowIndex;
-    this.treeMeshes = [];
-    this.addTrees();
+    this.scene = scene
+    this.resources = resources
+    this.trees = trees
+    this.rowIndex = rowIndex
+    this.treeMeshes = []
+    this.addTrees()
   }
 
   // 添加所有树木到当前行
   addTrees() {
     this.trees.forEach((treeData) => {
-      const { tileIndex, type } = treeData;
+      const { tileIndex, type } = treeData
       // 获取对应类型的树模型
-      const treeResource = this.resources.items[type];
+      const treeResource = this.resources.items[type]
       if (!treeResource) {
-        console.warn(`未找到资源: ${type}`);
-        return;
+        console.warn(`未找到资源: ${type}`)
+        return
       }
       // 克隆树模型
-      const treeMesh = treeResource.scene.clone();
+      const treeMesh = treeResource.scene.clone()
       // 递归设置所有 mesh 可投射阴影
       treeMesh.traverse((child) => {
         if (child.isMesh) {
-          child.castShadow = true; // 树木产生阴影
+          child.castShadow = true // 树木产生阴影
         }
-      });
+      })
       // 设置树的位置（x轴为tileIndex，z轴为rowIndex）
-      treeMesh.position.set(tileIndex, 0.2, this.rowIndex);
+      treeMesh.position.set(tileIndex, 0.2, this.rowIndex)
       // 添加到场景
-      this.scene.add(treeMesh);
+      this.scene.add(treeMesh)
       // 存储树对象，便于后续移除
-      this.treeMeshes.push(treeMesh);
-    });
+      this.treeMeshes.push(treeMesh)
+    })
   }
 
   // 移除所有树木
   remove() {
     this.treeMeshes.forEach((tree) => {
-      this.scene.remove(tree);
-    });
-    this.treeMeshes = [];
+      this.scene.remove(tree)
+    })
+    this.treeMeshes = []
   }
 }
