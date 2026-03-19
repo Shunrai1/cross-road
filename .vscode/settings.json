@@ -9,20 +9,24 @@
   "json.schemas": [],
   "workbench.iconTheme": "material-icon-theme",
   "glassit.alpha": 220,
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
   "git.enableSmartCommit": true,
   "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
     "vue",
     "html",
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact"
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
   "bracket-pair-colorizer-2.depreciation-notice": false,
   "eslint.useFlatConfig": true,

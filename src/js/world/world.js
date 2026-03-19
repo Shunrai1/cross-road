@@ -1,9 +1,16 @@
 import * as THREE from 'three'
 
 import TextMesh from '../components/text-mesh.js'
-import { CLOCK_EFFECT_DURATION_MS, SHEID_EFFECT_DURATION_MS, SHOE_EFFECT_DURATION_MS, ZONGZI_EFFECT_DURATION_MS } from '../constants.js'
+import {
+  CLOCK_EFFECT_DURATION_MS,
+  SHEID_EFFECT_DURATION_MS,
+  SHOE_EFFECT_DURATION_MS,
+  SUPABASE_TABLE,
+  ZONGZI_EFFECT_DURATION_MS,
+} from '../constants.js'
 import Experience from '../experience.js'
 import { showItemDom, showItemEffectMask } from '../utils/itemUi.js'
+import { supabase } from '../utils/supabase.js'
 import Environment from './environment.js'
 import { ITEM_TYPES } from './ItemManager.js'
 import Map from './Map.js'
@@ -125,7 +132,78 @@ export default class World {
       this.map.update()
       if (this.user && !this.isGameOver) {
         this.map.checkAndExtendMap(this.user.currentTile.z)
+        // === 碰撞检测 ===
+        // 获取玩家mesh和所在行
+        const playerMesh = this.user.instance
+        if (playerMesh) {
+          const playerRow = this.user.currentTile.z
+          const carMeshes = this.map.getCarMeshesByRow(playerRow)
+          if (carMeshes.length > 0) {
+            // 构建玩家包围盒
+            const playerBox = new THREE.Box3().setFromObject(playerMesh)
+            for (const carMesh of carMeshes) {
+              const carBox = new THREE.Box3().setFromObject(carMesh)
+              if (playerBox.intersectsBox(carBox)) {
+                if (!this.user.isInvincible) {
+                  this.onGameOver()
+                }
+                else {
+                  // 可选：无敌时碰撞提示
+                  // console.log('无敌中，碰撞无效')
+                }
+              }
+            }
+          }
+        }
+        // === 检查道具拾取 ===
+        if (this.itemManager) {
+          this.itemManager.checkUserTile(this.user.currentTile)
+        }
+        this.user.update()
       }
     }
+    // TODO: 这里有疑问
+    if (this.user) {
+      // === 相机和光照跟随 ===
+      this.camera.instance.lookAt(this.user.agentGroup.position)
+      this.environment.sunLight.target.position.copy(
+        this.user.agentGroup.position,
+      )
+    }
+    if (this.textMesh) {
+      this.textMesh.update()
+    }
+  }
+
+  // 新增上传分数方法
+  async uploadScore(score) {
+    const username = localStorage.getItem('username') || 'unknown'
+    try {
+      await supabase.from(SUPABASE_TABLE).insert([{ username, score }])
+    }
+    catch (e) {
+      console.warn('分数上传失败', e)
+    }
+  }
+
+  // 游戏结束处理方法，增加防抖
+  async onGameOver() {
+    if (this.isGameOver)
+      return
+    // 让小鸡呈现压扁状态
+    this.user.instance.scale.set(0.3, 0.1, 0.3)
+    this.isGameOver = true
+    // 暂停游戏
+    const score = this.user.maxZ || 0
+    this.experience.trigger('restart')
+    this.uploadScore(score) // 这里自动防抖
+  }
+
+  // 游戏重启处理方法
+  async onRestart() {
+    // 重置防抖标志
+    this.isGameOver = false
+    this.map.resetMap()
+    this.user.reset()
   }
 }
