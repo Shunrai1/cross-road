@@ -26,6 +26,7 @@ export default class World {
 
     // 游戏结束防抖标志
     this.isGameOver = false
+    this.itemScoreSum = 0 // 新增：记录道具得分
 
     // 上传分数方法防抖
     this.uploadScore = debounce(this.uploadScore.bind(this), 1000)
@@ -91,6 +92,7 @@ export default class World {
       if (addScore > 0) {
         // 只触发 itemScore 事件
         this.experience.trigger('itemScore', [addScore])
+        this.itemScoreSum += addScore // 累加道具分数
         console.warn(`[道具] 拾取${type}道具，分数+${addScore}`)
       }
       else {
@@ -194,7 +196,7 @@ export default class World {
     this.user.instance.scale.set(0.3, 0.1, 0.3)
     this.isGameOver = true
     // 暂停游戏
-    const score = this.user.maxZ || 0
+    const score = (this.user.maxZ || 0) + this.itemScoreSum // 总分 = 前进得分 + 道具得分
     this.experience.trigger('restart')
     this.uploadScore(score) // 这里自动防抖
   }
@@ -203,6 +205,7 @@ export default class World {
   async onRestart() {
     // 重置防抖标志
     this.isGameOver = false
+    this.itemScoreSum = 0 // 重置道具得分
     this.map.resetMap()
     this.user.reset()
   }
