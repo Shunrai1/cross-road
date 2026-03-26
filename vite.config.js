@@ -13,12 +13,16 @@ const PORT = _config.server.port
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './',
   server: {
     host: HOST,
     port: PORT,
   },
   plugins: [
-    legacy(),
+    legacy({
+      modernTargets: 'defaults',
+      renderLegacyChunks: false,
+    }),
     glsl(),
     vue(),
     // - partytownVite : 这是 Partytown 库提供的 Vite 插件。Partytown 用于将第三方脚本（如统计代码、广告代码）从主线程移到 Web Worker 中运行，从而提高网页的加载速度和性能。

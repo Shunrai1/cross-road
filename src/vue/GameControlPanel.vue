@@ -79,12 +79,14 @@ function pauseMusic() {
 
 // 切换音乐播放状态
 function toggleMusic() {
-  if (!isMusicAllowed.value)
-    return
   if (isMusicPlaying.value) {
     pauseMusic()
+    isMusicAllowed.value = false
+    localStorage.setItem('musicAllowed', 'false')
   }
   else {
+    isMusicAllowed.value = true
+    localStorage.setItem('musicAllowed', 'true')
     playMusic()
   }
 }
@@ -161,8 +163,7 @@ function toggleLang() {
   <div class="fixed top-4 right-14 flex gap-4 z-[1000] select-none touch-none">
     <!-- 音乐开关按钮 -->
     <button
-      class="w-12 h-12 flex items-center justify-center rounded   mr-2"
-      :disabled="!isMusicAllowed"
+      class="w-12 h-12 flex items-center justify-center rounded mr-2"
       :title="t().musicSwitch"
       @click="toggleMusic"
     >
